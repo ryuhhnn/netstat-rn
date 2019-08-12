@@ -1,0 +1,14 @@
+{
+  "name": "server",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "neo4j-driver": "^1.7.5",
+    "uuid": "^3.3.2"
+  }
+}
