@@ -51,6 +51,13 @@
               <md-option value="wired-device">Wired Device</md-option>
             </md-select>
           </md-field>
+          <md-field>
+            <label for="device_status">Status</label>
+            <md-select v-model="deviceStatus" name="device_status" id="device_status">
+              <md-option value="online">Online</md-option>
+              <md-option value="offline">Offline</md-option>
+            </md-select>
+          </md-field>
         </form>
       </md-dialog-content>
 
@@ -70,7 +77,8 @@ export default {
     menuVisible: false,
     showDialog: false,
     deviceName: "",
-    deviceType: ""
+    deviceType: "",
+    deviceStatus: ""
   }),
   methods: {
     ...mapMutations(["clearStore"]),
@@ -79,7 +87,8 @@ export default {
       this.showDialog = false;
       this.addDevice({
         name: this.deviceName,
-        type: this.deviceType
+        type: this.deviceType,
+        status: this.deviceStatus
       });
       this.deviceName = "";
       this.deviceType = "";

@@ -4,13 +4,21 @@
       <md-field>
         <label>Node:</label>
         <md-select v-model="parentNode">
-          <md-option v-for="device in devices" :key="device.id" :value="device.id">{{device.name}}</md-option>
+          <md-option
+            v-for="device in devices"
+            :key="device.properties.id"
+            :value="device.properties.id"
+          >{{device.properties.name}} ({{device.properties.type}})</md-option>
         </md-select>
       </md-field>
       <md-field>
         <label>Connects To:</label>
         <md-select v-model="childNode">
-          <md-option v-for="device in devices" :key="device.id" :value="device.id">{{device.name}}</md-option>
+          <md-option
+            v-for="device in devices"
+            :key="device.properties.id"
+            :value="device.properties.id"
+          >{{device.properties.name}} ({{device.properties.type}})</md-option>
         </md-select>
       </md-field>
     </form>

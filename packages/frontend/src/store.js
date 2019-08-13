@@ -14,7 +14,8 @@ const api = axios.create({
 });
 
 const initialState = {
-  devices: []
+  devices: [],
+  device: { node: {}, children: [] }
 };
 
 export default new Vuex.Store({
@@ -24,6 +25,14 @@ export default new Vuex.Store({
       Array.isArray(device)
         ? state.devices.push(...device)
         : state.devices.push(device);
+    },
+    deviceToggle(state, device) {
+      state.device.node = { ...device };
+    },
+    deviceAddChildren(state, device) {
+      Array.isArray(device.children)
+        ? (state.device.children = [...device.children])
+        : (state.device.children = []);
     },
     connectionAdd(state, payload) {
       console.log(state, payload);
@@ -35,6 +44,30 @@ export default new Vuex.Store({
       try {
         devices = await api.get("/device/list");
         commit("deviceAdd", devices.data);
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    async fetchDevice({ commit }, payload) {
+      let response;
+      try {
+        response = await api.get("/device/get", {
+          params: {
+            id: payload
+          }
+        });
+        commit("deviceToggle", response.data);
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        response = await api.get("/device/children", {
+          params: {
+            id: payload
+          }
+        });
+        commit("deviceAddChildren", response.data);
       } catch (e) {
         console.error(e);
       }

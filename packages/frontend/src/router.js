@@ -14,6 +14,11 @@ export default new Router({
       component: Home
     },
     {
+      path: "/edit/:id",
+      name: "edit",
+      component: () => import(/* webpackChunkName: "edit" */ "./views/Edit.vue")
+    },
+    {
       path: "/settings",
       name: "settings",
       component: () =>
