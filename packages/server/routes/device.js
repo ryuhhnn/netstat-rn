@@ -106,12 +106,18 @@ module.exports = (app, session, driver) => {
   app.post("/device/connect", async (req, res) => {
     const parentId = req.body.parentId;
     const childId = req.body.childId;
-    const result = await session.run(`
-      MATCH (p:Device),(c: Device)
-      WHERE p.id = "${parentId}" AND c.id = "${childId}"
-      CREATE (p)-[r:CONNECTS_TO]->(c)
-      RETURN r
-    `);
+    let result;
+    try {
+      result = await session.run(`
+        MATCH (p:Device),(c: Device)
+        WHERE p.id = "${parentId}" AND c.id = "${childId}"
+        CREATE (p)-[r:CONNECTS_TO]->(c)
+        RETURN r
+      `);
+    } catch (e) {
+      console.error(e);
+      res.json(e);
+    }
 
     session.close();
 
@@ -124,14 +130,22 @@ module.exports = (app, session, driver) => {
   app.post("/device/status", async (req, res) => {
     const node = req.body.id;
     const status = req.body.status;
-    const result = await session.run(
-      `
-      MATCH (d:Device {id: $id})
-      SET d.status = "${status}"
-      RETURN d
-    `,
-      { id: node }
-    );
+
+    let result;
+
+    try {
+      result = await session.run(
+        `
+        MATCH (d:Device {id: $id})
+        SET d.status = "${status}"
+        RETURN d
+      `,
+        { id: node }
+      );
+    } catch (e) {
+      console.error(e);
+      res.json(e);
+    }
 
     session.close();
 
