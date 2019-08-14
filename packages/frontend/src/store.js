@@ -36,6 +36,11 @@ export default new Vuex.Store({
     },
     connectionAdd(state, payload) {
       console.log(state, payload);
+    },
+    deviceStatus(state, device) {
+      state.device.node = { ...device };
+      const deviceInArray = state.devices.findIndex(d => d.id === device.id);
+      state.devices[deviceInArray] = { ...device };
     }
   },
   actions: {
@@ -86,6 +91,15 @@ export default new Vuex.Store({
       try {
         response = await api.post("/device/connect", payload);
         commit("connectionAdd", response.data);
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    async toggleDeviceStatus({ commit }, payload) {
+      let response;
+      try {
+        response = await api.post("/device/status", { ...payload });
+        commit("deviceStatus", response.data);
       } catch (e) {
         console.error(e);
       }

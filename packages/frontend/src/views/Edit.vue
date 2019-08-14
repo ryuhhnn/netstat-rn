@@ -18,10 +18,19 @@
       </md-card-content>
 
       <md-card-actions>
-        <md-button class="md-accent">Power Off</md-button>
-        <md-button>Power On</md-button>
+        <md-button class="md-accent" @click="toggleStatus('offline')">Power Off</md-button>
+        <md-button @click="toggleStatus('online')">Power On</md-button>
       </md-card-actions>
     </md-card>
+    <md-snackbar
+      md-position="center"
+      :md-duration="3000"
+      :md-active.sync="showSnackbar"
+      md-persistent
+    >
+      <span>{{this.snackbarMessage}}</span>
+      <md-button class="md-primary" @click="showSnackbar = false">OK</md-button>
+    </md-snackbar>
   </div>
 </template>
 
@@ -34,13 +43,28 @@ export default {
     name: "",
     type: "",
     status: "",
-    children: []
+    children: [],
+    showSnackbar: false,
+    snackbarMessage: ""
   }),
   computed: {
     ...mapState(["device"])
   },
   methods: {
-    ...mapActions(["fetchDevice"])
+    ...mapActions(["fetchDevice", "toggleDeviceStatus"]),
+    toggleStatus(status) {
+      if (status === this.status) {
+        // toggle the snackbar
+        this.snackbarMessage = `Device is already ${status}!`;
+        this.showSnackbar = true;
+      } else {
+        this.toggleDeviceStatus({ id: this.$route.params.id, status });
+        this.snackbarMessage = `${this.name} is now ${status}`;
+        this.showSnackbar = true;
+        // this is hax, plus if there's a network error this will become out of sync
+        this.status = status;
+      }
+    }
   },
   async created() {
     await this.fetchDevice(this.$route.params.id);

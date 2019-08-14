@@ -119,4 +119,26 @@ module.exports = (app, session, driver) => {
 
     driver.close();
   });
+
+  // Set the status of a device
+  app.post("/device/status", async (req, res) => {
+    const node = req.body.id;
+    const status = req.body.status;
+    const result = await session.run(
+      `
+      MATCH (d:Device {id: $id})
+      SET d.status = "${status}"
+      RETURN d
+    `,
+      { id: node }
+    );
+
+    session.close();
+
+    // spreading this result because there's only one object
+    if (result) res.json(...result.records.map(result => result.get(0)));
+    else res.status(501).send({});
+
+    driver.close();
+  });
 };
